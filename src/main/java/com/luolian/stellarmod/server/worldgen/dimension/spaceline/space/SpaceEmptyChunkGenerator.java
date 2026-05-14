@@ -1,4 +1,4 @@
-package com.luolian.stellarmod.server.worldgen.dimension;
+package com.luolian.stellarmod.server.worldgen.dimension.spaceline.space;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -27,9 +27,9 @@ import java.util.concurrent.Executor;
 /**
  * 空区块生成器，用于星域维度。
  * 不生成任何地形、结构、生物或装饰——整个维度为纯虚空。
- * 配合 {@link StellarDimensions} 中定义的 512 格高度使用。
+ * 配合 {@link SpaceDimensions} 中定义的 512 格高度使用。
  */
-public class EmptyChunkGenerator extends ChunkGenerator {
+public class SpaceEmptyChunkGenerator extends ChunkGenerator {
 
     private static final int MIN_Y = 0;
     private static final int HEIGHT = 512;
@@ -38,22 +38,22 @@ public class EmptyChunkGenerator extends ChunkGenerator {
      * Codec，用于数据包中对本生成器的序列化与反序列化。
      * 仅保留生物群系源信息，其余字段由构造器补全。
      */
-    public static final Codec<EmptyChunkGenerator> CODEC = RecordCodecBuilder.create(instance ->
+    public static final Codec<SpaceEmptyChunkGenerator> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     FixedBiomeSource.CODEC.fieldOf("biome_source").forGetter(
                             gen -> (FixedBiomeSource) gen.getBiomeSource()
                     )
-            ).apply(instance, EmptyChunkGenerator::new)
+            ).apply(instance, SpaceEmptyChunkGenerator::new)
     );
 
     /**
      * 从 FixedBiomeSource 中提取唯一 Holder\<Biome\> 并委托给主构造器。
      */
-    private EmptyChunkGenerator(FixedBiomeSource biomeSource) {
+    private SpaceEmptyChunkGenerator(FixedBiomeSource biomeSource) {
         this(extractBiome(biomeSource));
     }
 
-    public EmptyChunkGenerator(Holder<Biome> biome) {
+    public SpaceEmptyChunkGenerator(Holder<Biome> biome) {
         super(new FixedBiomeSource(biome));
     }
 

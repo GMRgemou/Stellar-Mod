@@ -15,7 +15,7 @@ import com.luolian.stellarmod.server.item.StellarCreativeModeTabs;
 import com.luolian.stellarmod.server.item.StellarItems;
 import com.luolian.stellarmod.server.item.custom.toolcore.ToolCoreItem;
 import com.luolian.stellarmod.server.potion.StellarPotions;
-import com.luolian.stellarmod.server.worldgen.dimension.EmptyChunkGenerator;
+import com.luolian.stellarmod.server.worldgen.dimension.spaceline.space.SpaceEmptyChunkGenerator;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -47,8 +47,8 @@ public class StellarMod {
     public static final DeferredRegister<Codec<? extends ChunkGenerator>> CHUNK_GENERATORS =
             DeferredRegister.create(Registries.CHUNK_GENERATOR, MOD_ID);
 
-    public static final RegistryObject<Codec<EmptyChunkGenerator>> VOID_CHUNK_GENERATOR =
-            CHUNK_GENERATORS.register("empty", () -> EmptyChunkGenerator.CODEC);
+    public static final RegistryObject<Codec<SpaceEmptyChunkGenerator>> VOID_CHUNK_GENERATOR =
+            CHUNK_GENERATORS.register("empty", () -> SpaceEmptyChunkGenerator.CODEC);
 
     /**
      * @param path 命名空间路径

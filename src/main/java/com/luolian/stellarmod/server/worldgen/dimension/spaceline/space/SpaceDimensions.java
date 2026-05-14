@@ -1,7 +1,7 @@
-package com.luolian.stellarmod.server.worldgen.dimension;
+package com.luolian.stellarmod.server.worldgen.dimension.spaceline.space;
 
 import com.luolian.stellarmod.StellarMod;
-import com.luolian.stellarmod.server.worldgen.biome.StellarBiomes;
+import com.luolian.stellarmod.server.worldgen.biome.spaceline.space.SpaceBiomes;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
@@ -28,10 +28,10 @@ import java.util.OptionalLong;
  *   <li><b>末地视觉效果：</b>使用 {@link BuiltinDimensionTypes#END_EFFECTS}，
  *       提供黑色天空和雾气渲染，贴合太空氛围</li>
  *   <li><b>无怪物生成：</b>亮度和怪物生成上限均为 0</li>
- *   <li><b>区块生成器：</b>使用 {@link EmptyChunkGenerator}，不生成任何地形</li>
+ *   <li><b>区块生成器：</b>使用 {@link SpaceEmptyChunkGenerator}，不生成任何地形</li>
  * </ul>
  */
-public class StellarDimensions {
+public class SpaceDimensions {
     /** 星域维度的 LevelStem 注册键 */
     public static final ResourceKey<LevelStem> SPACE_LEVEL_STEM_KEY = ResourceKey.create(Registries.LEVEL_STEM,
             StellarMod.location("space_dimension"));
@@ -69,18 +69,18 @@ public class StellarDimensions {
     /**
      * 注册星域维度的 {@link LevelStem}，绑定 DimensionType 与 EmptyChunkGenerator。
      * <p>
-     * 使用 {@link StellarBiomes#SPACE_BIOME} 作为区块生成器的唯一生物群系源。
+     * 使用 {@link SpaceBiomes#SPACE_BIOME} 作为区块生成器的唯一生物群系源。
      */
     public static void bootstrapStem(BootstapContext<LevelStem> context) {
         HolderGetter<Biome> biomeRegistry = context.lookup(Registries.BIOME);
         HolderGetter<DimensionType> dimTypes = context.lookup(Registries.DIMENSION_TYPE);
-        EmptyChunkGenerator emptyChunkGenerator = new EmptyChunkGenerator(
-                biomeRegistry.getOrThrow(StellarBiomes.SPACE_BIOME)
+        SpaceEmptyChunkGenerator spaceEmptyChunkGenerator = new SpaceEmptyChunkGenerator(
+                biomeRegistry.getOrThrow(SpaceBiomes.SPACE_BIOME)
         );
 
         LevelStem stem = new LevelStem(
-                dimTypes.getOrThrow(StellarDimensions.SPACE_DIM_TYPE_KEY),
-                emptyChunkGenerator
+                dimTypes.getOrThrow(SpaceDimensions.SPACE_DIM_TYPE_KEY),
+                spaceEmptyChunkGenerator
         );
         context.register(SPACE_LEVEL_STEM_KEY, stem);
     }

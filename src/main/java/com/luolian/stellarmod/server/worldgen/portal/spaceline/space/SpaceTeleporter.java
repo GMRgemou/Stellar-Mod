@@ -1,4 +1,4 @@
-package com.luolian.stellarmod.server.worldgen.portal;
+package com.luolian.stellarmod.server.worldgen.portal.spaceline.space;
 
 import com.luolian.stellarmod.server.block.StellarBlocks;
 import com.luolian.stellarmod.server.block.custom.DimensionBlock;
@@ -20,7 +20,7 @@ import java.util.function.Function;
  *   <li>返回主世界时：在目标坐标附近查找安全的站立位置</li>
  * </ul>
  */
-public class StellarTeleporter implements ITeleporter {
+public class SpaceTeleporter implements ITeleporter {
     private final BlockPos targetPos;
     private final boolean insideDimension;
 
@@ -29,7 +29,7 @@ public class StellarTeleporter implements ITeleporter {
      * @param insideDim {@code true} 表示传送到星域维度内部，
      *                  {@code false} 表示从星域返回主世界
      */
-    public StellarTeleporter(BlockPos pos, boolean insideDim) {
+    public SpaceTeleporter(BlockPos pos, boolean insideDim) {
         this.targetPos = pos;
         this.insideDimension = insideDim;
     }

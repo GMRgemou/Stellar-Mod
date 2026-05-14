@@ -1,11 +1,10 @@
-package com.luolian.stellarmod.server.worldgen.biome;
+package com.luolian.stellarmod.server.worldgen.biome.spaceline.space;
 
 import com.luolian.stellarmod.StellarMod;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeGenerationSettings;
 import net.minecraft.world.level.biome.BiomeSpecialEffects;
@@ -23,7 +22,7 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
  *   <li>配合 {@code EmptyChunkGenerator} 构成纯虚空环境</li>
  * </ul>
  */
-public class StellarBiomes {
+public class SpaceBiomes {
     public static final ResourceKey<Biome> SPACE_BIOME = ResourceKey.create(Registries.BIOME,
             StellarMod.location("space_biome"));
 
@@ -31,7 +30,7 @@ public class StellarBiomes {
      * 数据生成阶段向注册表注入星域生物群系。
      */
     public static void bootstrap(BootstapContext<Biome> context) {
-        context.register(SPACE_BIOME, createStellarBiome(context));
+        context.register(SPACE_BIOME, createSpaceBiome(context));
     }
 
     /**
@@ -43,7 +42,7 @@ public class StellarBiomes {
      *   <li>气候：无降水，温度 0.8（影响草/树叶颜色，实际无植被因此无视觉影响）</li>
      * </ul>
      */
-    private static Biome createStellarBiome(BootstapContext<Biome> context) {
+    private static Biome createSpaceBiome(BootstapContext<Biome> context) {
         HolderGetter<PlacedFeature> placedFeatureGetter = context.lookup(Registries.PLACED_FEATURE);
         HolderGetter<ConfiguredWorldCarver<?>> carverGetter = context.lookup(Registries.CONFIGURED_CARVER);
 
