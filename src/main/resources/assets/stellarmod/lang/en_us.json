@@ -96,8 +96,7 @@
   "tooltip.stellarmod_item.tool_core.type.sword": "Sword",
   "tooltip.stellarmod_item.tool_core.type.hoe": "Hoe",
   "tooltip.stellarmod_item.tool_core.materials": "§7Materials:",
-  "tooltip.stellarmod_item.tool_core.material_count": "%s x%d",
-  "tooltip.stellarmod_item.tool_core.durability": "§7Durability: §f%s / %s",
+    "tooltip.stellarmod_item.tool_core.durability": "§7Durability: §f%s / %s",
   "tooltip.stellarmod_item.tool_core.will_repair": "§aWill repair: +%s",
   "tooltip.stellarmod_item.tool_core.mining_level": "§7Mining Level: §f%s",
   "tooltip.stellarmod_item.tool_core.speed": "§7Speed: §f%s",
@@ -111,6 +110,8 @@
   "tooltip.stellarmod_item.tool_core.press_shift": "Press Shift to view matrix effects",
   "tooltip.stellarmod_item.tool_core.more_modifiers": "%s more items, view in settings",
   "tooltip.stellarmod_item.tool_core.more_matrix": "%s more items, view in matrix panel",
+  "tooltip.stellarmod_item.tool_core.more_materials": "%s more materials",
+  "tooltip.stellarmod_item.tool_core.new_tag": "§e(New)",
 
   "tooltip.stellarmod_item.metal_detector": "A instrument for prospecting, which can detect iron, gold, and diamond ores. \n They have nowhere to hide!!!",
 

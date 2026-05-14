@@ -4,8 +4,9 @@ import com.luolian.stellarmod.StellarMod;
 import com.luolian.stellarmod.api.toolcore.StellarMatrixEffect;
 import com.luolian.stellarmod.api.util.OriginsUtil;
 import com.luolian.stellarmod.server.data.toolcore.StellarMatrixRegistry;
-import com.luolian.stellarmod.server.item.custom.ToolCoreItem;
-import com.luolian.stellarmod.server.worldgen.dimension.StellarDimensions;
+import com.luolian.stellarmod.server.item.custom.toolcore.ToolCoreItem;
+import com.luolian.stellarmod.server.item.custom.toolcore.ToolCoreNBT;
+import com.luolian.stellarmod.server.worldgen.dimension.spaceline.space.SpaceDimensions;
 import io.github.edwinmindcraft.calio.api.event.CalioDynamicRegistryEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -53,7 +54,7 @@ public class ServerEventListener {
     @SubscribeEvent
     public static void onLevelLoad(LevelEvent.Load event) {
         if (!(event.getLevel() instanceof ServerLevel level)) return;
-        if (!level.dimension().equals(StellarDimensions.STELLAR_SPACE_LEVEL_KEY)) return;
+        if (!level.dimension().equals(SpaceDimensions.SPACE_LEVEL_KEY)) return;
 
         StructureSpawnData data = level.getDataStorage().computeIfAbsent(
                 StructureSpawnData::load,
@@ -93,9 +94,9 @@ public class ServerEventListener {
 
         for (ItemStack stack : player.getInventory().items) {
             if (!(stack.getItem() instanceof ToolCoreItem)) continue;
-            for (String id : ToolCoreItem.getAttachedMatrixEffects(stack)) {
-                if (!ToolCoreItem.isMatrixEnabled(stack, id)) continue;
-                int activeLevel = ToolCoreItem.getMatrixActiveLevel(stack, id);
+            for (String id : ToolCoreNBT.getAttachedMatrixEffects(stack)) {
+                if (!ToolCoreNBT.isMatrixEnabled(stack, id)) continue;
+                int activeLevel = ToolCoreNBT.getMatrixActiveLevel(stack, id);
                 if (activeLevel <= 0) continue;
                 StellarMatrixEffect effect = StellarMatrixRegistry.get(id);
                 if (effect != null) {

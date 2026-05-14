@@ -5,8 +5,12 @@ import com.luolian.stellarmod.client.screen.craftingArea.CraftingAreaBlockMenu;
 import com.luolian.stellarmod.server.data.toolcore.Material;
 import com.luolian.stellarmod.server.data.toolcore.MaterialManager;
 import com.luolian.stellarmod.server.data.toolcore.StellarMatrixRegistry;
-import com.luolian.stellarmod.server.item.custom.StellarMatrixItem;
-import com.luolian.stellarmod.server.item.custom.ToolCoreItem;
+import com.luolian.stellarmod.server.item.custom.toolcore.StellarMatrixItem;
+import com.luolian.stellarmod.server.item.custom.toolcore.ToolCoreItem;
+import com.luolian.stellarmod.server.item.custom.toolcore.ToolCoreNBT;
+import com.luolian.stellarmod.server.item.custom.toolcore.ToolCorePreviewHelper;
+import com.luolian.stellarmod.server.data.toolcore.Material;
+import com.luolian.stellarmod.server.data.toolcore.MaterialManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -169,10 +173,10 @@ public class CraftingAreaBlockEntity extends BlockEntity implements MenuProvider
             Material mat = MaterialManager.getMaterial(id);
             if (mat == null) continue; //该物品未配置材料属性，跳过
 
-            boolean firstTime = !ToolCoreItem.hasMaterial(core, id);
+            boolean firstTime = !ToolCoreNBT.hasMaterial(core, id);
 
             //如果是修复操作（非首次添加），且当前工具核心耐久已满，则跳过该材料
-            if (!firstTime && ToolCoreItem.getStoredDamage(core) == 0) {
+            if (!firstTime && ToolCoreNBT.getStoredDamage(core) == 0) {
                 continue; //耐久满，无需修复，继续扫描下一个材料
             }
 
@@ -201,14 +205,14 @@ public class CraftingAreaBlockEntity extends BlockEntity implements MenuProvider
             StellarMatrixEffect effect = StellarMatrixRegistry.get(matrixItem.getEffectId());
             if (effect != null) {
                 int maxLevel = effect.getMaxLevel();
-                int currentLevel = ToolCoreItem.getMatrixTotalLevel(core, matrixItem.getEffectId());
+                int currentLevel = ToolCoreNBT.getMatrixTotalLevel(core, matrixItem.getEffectId());
                 if (currentLevel < maxLevel) {
                     ItemStack preview = core.copy();
                     preview.setCount(1);
                     //模拟矩阵合成（不实际消耗物品，仅用于预览）
-                    ToolCoreItem.mergeMatrixLevel(preview, matrixItem.getEffectId(), matrixItem.getLevel(), maxLevel);
-                    //添加预览标记，便于客户端显示提示
-                    preview.getOrCreateTag().putBoolean("Preview", true);
+                    ToolCoreNBT.mergeMatrixLevel(preview, matrixItem.getEffectId(), matrixItem.getLevel(), maxLevel);
+                    //写入预览标记，便于客户端显示提示和高亮
+                    ToolCorePreviewHelper.writeMatrixPreview(preview, matrixItem.getEffectId());
                     itemHandler.setStackInSlot(OUTPUT_SLOT, preview);
                     return;
                 }
@@ -230,18 +234,22 @@ public class CraftingAreaBlockEntity extends BlockEntity implements MenuProvider
         preview.setCount(1);
 
         if (candidate.isFirstTime()) {
-            //首次添加：模拟添加材料（不实际消耗）
-            ToolCoreItem.addMaterialToStack(preview, candidate.material());
+            //模拟添加材料（不实际消耗）
+            ToolCoreNBT.addMaterialToStack(preview, candidate.material());
+            //写入预览标记：自动对比新增副词条并高亮
+            ToolCorePreviewHelper.writeNewMaterialPreview(preview, candidate.material(), core);
         } else {
             //计算预览修复量，存入临时标记供提示显示
-            int repair = ToolCoreItem.tryRepairWithMaterial(preview, candidate.material());
+            int repair = ToolCoreNBT.tryRepairWithMaterial(preview, candidate.material());
             if (repair > 0) {
-                preview.getOrCreateTag().putInt("PreviewRepair", repair);
+                preview.getOrCreateTag().putInt(ToolCoreNBT.TAG_PREVIEW_REPAIR, repair);
             }
+            //记录本次消耗的材料ID，供提示高亮使用
+            preview.getOrCreateTag().putString(ToolCoreNBT.TAG_PREVIEW_MATERIAL_ID, candidate.material().itemId().toString());
+            //添加预览标记
+            preview.getOrCreateTag().putBoolean(ToolCoreNBT.TAG_PREVIEW, true);
         }
 
-        //添加预览标记，便于客户端显示提示
-        preview.getOrCreateTag().putBoolean("Preview", true);
         itemHandler.setStackInSlot(OUTPUT_SLOT, preview);
     }
 
@@ -259,7 +267,7 @@ public class CraftingAreaBlockEntity extends BlockEntity implements MenuProvider
             StellarMatrixEffect effect = StellarMatrixRegistry.get(matrixItem.getEffectId());
             if (effect != null) {
                 int maxLevel = effect.getMaxLevel();
-                int currentLevel = ToolCoreItem.getMatrixTotalLevel(core, matrixItem.getEffectId());
+                int currentLevel = ToolCoreNBT.getMatrixTotalLevel(core, matrixItem.getEffectId());
                 if (currentLevel < maxLevel) {
                     //消耗矩阵物品（每次合成消耗 1 个）
                     itemHandler.extractItem(MATRIX_SLOT, 1, false);
@@ -267,11 +275,10 @@ public class CraftingAreaBlockEntity extends BlockEntity implements MenuProvider
                     //复制核心并应用矩阵效果
                     ItemStack result = core.copy();
                     result.setCount(1);
-                    ToolCoreItem.mergeMatrixLevel(result, matrixItem.getEffectId(), matrixItem.getLevel(), maxLevel);
+                    ToolCoreNBT.mergeMatrixLevel(result, matrixItem.getEffectId(), matrixItem.getLevel(), maxLevel);
 
                     //移除预览相关标记
-                    result.removeTagKey("Preview");
-                    result.removeTagKey("PreviewRepair");
+                    ToolCorePreviewHelper.clearPreviewTags(result);
 
                     //消耗原核心（数量减1）
                     itemHandler.extractItem(CORE_SLOT, 1, false);
@@ -308,14 +315,13 @@ public class CraftingAreaBlockEntity extends BlockEntity implements MenuProvider
         result.setCount(1);
 
         if (candidate.isFirstTime()) {
-            ToolCoreItem.addMaterialToStack(result, candidate.material());
+            ToolCoreNBT.addMaterialToStack(result, candidate.material());
         } else {
-            ToolCoreItem.tryRepairWithMaterial(result, candidate.material());
+            ToolCoreNBT.tryRepairWithMaterial(result, candidate.material());
         }
 
         //移除预览相关标记
-        result.removeTagKey("Preview");
-        result.removeTagKey("PreviewRepair");
+        ToolCorePreviewHelper.clearPreviewTags(result);
 
         //消耗原核心（数量减1）
         itemHandler.extractItem(CORE_SLOT, 1, false);
@@ -346,7 +352,7 @@ public class CraftingAreaBlockEntity extends BlockEntity implements MenuProvider
     //此处具体为:外部请求某个能力时调用，如果请求的是 ITEM_HANDLER，则返回包裹了 itemHandler 的 LazyOptional；否则交给父类处理（可能返回其他能力或无）
     @Override
     public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {    //ITEM_HANDLER代表“物品处理器”能力，即该方块拥有一个可以被外部访问的物品栏
+        if (cap == ForgeCapabilities.ITEM_HANDLER) {    //ITEM_HANDLER代表"物品处理器"能力，即该方块拥有一个可以被外部访问的物品栏
             return lazyItemHandler.cast();
         }
         return super.getCapability(cap, side);

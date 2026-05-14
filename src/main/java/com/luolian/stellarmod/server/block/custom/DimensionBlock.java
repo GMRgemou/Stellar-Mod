@@ -1,7 +1,7 @@
 package com.luolian.stellarmod.server.block.custom;
 
-import com.luolian.stellarmod.server.worldgen.dimension.StellarDimensions;
-import com.luolian.stellarmod.server.worldgen.portal.StellarTeleporter;
+import com.luolian.stellarmod.server.worldgen.dimension.spaceline.space.SpaceDimensions;
+import com.luolian.stellarmod.server.worldgen.portal.spaceline.space.SpaceTeleporter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
@@ -23,24 +23,24 @@ public class DimensionBlock extends Block {
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (player.canChangeDimensions()) {
-            handleStellarPortal(player, pos);
+            handleSpacePortal(player, pos);
             return InteractionResult.SUCCESS;
         } else  {
             return InteractionResult.CONSUME;
         }
     }
 
-    private void handleStellarPortal(Entity player, BlockPos pos) {
+    private void handleSpacePortal(Entity player, BlockPos pos) {
         if (player.level() instanceof ServerLevel serverLevel) {
             MinecraftServer minecraftServer = serverLevel.getServer();
-            ResourceKey<Level> resourceKey = player.level().dimension() == StellarDimensions.STELLAR_SPACE_LEVEL_KEY ?
-                    Level.OVERWORLD : StellarDimensions.STELLAR_SPACE_LEVEL_KEY;
+            ResourceKey<Level> resourceKey = player.level().dimension() == SpaceDimensions.SPACE_LEVEL_KEY ?
+                    Level.OVERWORLD : SpaceDimensions.SPACE_LEVEL_KEY;
 
             ServerLevel portalDimension = minecraftServer.getLevel(resourceKey);
             if (portalDimension != null && !player.isPassenger()) {
-                player.changeDimension(portalDimension, new StellarTeleporter(pos, true));
+                player.changeDimension(portalDimension, new SpaceTeleporter(pos, true));
             } else {
-                player.changeDimension(portalDimension, new StellarTeleporter(pos, false));
+                player.changeDimension(portalDimension, new SpaceTeleporter(pos, false));
             }
         }
     }

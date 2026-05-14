@@ -1,6 +1,6 @@
 {
   "type": "minecraft:jigsaw",
-  "biomes": "stellarmod:stellar_biome",
+  "biomes": "stellarmod:space_biome",
   "step": "surface_structures",
   "spawn_overrides": {},
   "start_pool": "stellarmod:kjz",
