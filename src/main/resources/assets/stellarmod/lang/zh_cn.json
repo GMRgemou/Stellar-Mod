@@ -96,8 +96,7 @@
   "tooltip.stellarmod_item.tool_core.type.sword": "剑",
   "tooltip.stellarmod_item.tool_core.type.hoe": "锄",
   "tooltip.stellarmod_item.tool_core.materials": "§7材料:",
-  "tooltip.stellarmod_item.tool_core.material_count": "%s x%d",
-  "tooltip.stellarmod_item.tool_core.durability": "§7耐久: §f%s / %s",
+    "tooltip.stellarmod_item.tool_core.durability": "§7耐久: §f%s / %s",
   "tooltip.stellarmod_item.tool_core.will_repair": "§a将修复: +%s",
   "tooltip.stellarmod_item.tool_core.mining_level": "§7挖掘等级: §f%s",
   "tooltip.stellarmod_item.tool_core.speed": "§7挖掘速度: §f%s",
@@ -111,6 +110,8 @@
   "tooltip.stellarmod_item.tool_core.press_shift": "按下Shift键查看矩阵效果",
   "tooltip.stellarmod_item.tool_core.more_modifiers": "还有 %s 项，请在设置面板查看",
   "tooltip.stellarmod_item.tool_core.more_matrix": "还有 %s 项，请在矩阵面板查看",
+  "tooltip.stellarmod_item.tool_core.more_materials": "还有 %s 种材料",
+  "tooltip.stellarmod_item.tool_core.new_tag": "§e(新增)",
 
   "tooltip.stellarmod_item.metal_detector": "一款探矿用的仪器，可发现铁、金、钻石矿石 \n  无所遁形！！！",
 

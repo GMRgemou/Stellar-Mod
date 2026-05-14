@@ -10,6 +10,7 @@ import com.luolian.stellarmod.server.data.toolcore.StellarMatrixRegistry;
 import com.luolian.stellarmod.server.data.toolcore.StellarModifierRegistry;
 import com.luolian.stellarmod.server.data.toolcore.Material;
 import com.luolian.stellarmod.server.data.toolcore.MaterialManager;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -71,6 +72,20 @@ public class ToolCoreItem extends Item {
     public static final String TAG_MATRIX_ACTIVE_LEVELS = "ToolCoreMatrixActiveLevels";
     /** 矩阵效果开关状态存储键 */
     public static final String TAG_MATRIX_SETTINGS = "ToolCoreMatrixSettings";
+
+    //合成预览相关 NBT 键（仅预览物品上存在，实际合成后移除）
+    /** 标记该物品为合成预览产物 */
+    public static final String TAG_PREVIEW = "Preview";
+    /** 预览修复量（非首次材料添加时） */
+    public static final String TAG_PREVIEW_REPAIR = "PreviewRepair";
+    /** 本次合成应用的矩阵效果 ID */
+    public static final String TAG_PREVIEW_MATRIX_ID = "PreviewMatrixId";
+    /** 本次合成消耗的材料物品 ID */
+    public static final String TAG_PREVIEW_MATERIAL_ID = "PreviewMaterialId";
+    /** 本次合成是否为首次添加该材料 */
+    public static final String TAG_PREVIEW_IS_NEW_MATERIAL = "PreviewIsNewMaterial";
+    /** 本次合成新增的副词条 ID 列表 */
+    public static final String TAG_PREVIEW_NEW_MODIFIERS = "PreviewNewModifiers";
 
     //自定义标签：需要 5 级工具才能挖掘的方块
     public static final TagKey<Block> NEEDS_STELLAR_TOOL =
@@ -930,6 +945,13 @@ public class ToolCoreItem extends Item {
 
         //检测是否只按下了 Shift 键，若是则显示矩阵效果
         if (Screen.hasShiftDown() && !Screen.hasControlDown()) {
+            //读取预览标记，用于高亮本次合成新增的矩阵
+            String previewMatrixId = null;
+            if (stack.hasTag() && stack.getTag().contains(TAG_PREVIEW)
+                    && stack.getTag().contains(TAG_PREVIEW_MATRIX_ID, Tag.TAG_STRING)) {
+                previewMatrixId = stack.getTag().getString(TAG_PREVIEW_MATRIX_ID);
+            }
+
             Set<String> matrixIds = getAttachedMatrixEffects(stack);
             //先统计已启用的总数（不构建完整列表）
             int total = 0;
@@ -949,9 +971,14 @@ public class ToolCoreItem extends Item {
                         int totalLevel = getMatrixTotalLevel(stack, id);
                         int activeLevel = getMatrixActiveLevel(stack, id);
                         //MutableComponent是可修改的文本组件，允许在创建后动态追加内容、修改样式或添加事件
-                        //此处作用是复制一个已有的 displayName 组件，然后追加类似 “Lv.5/10” 的等级文本
+                        //此处作用是复制一个已有的 displayName 组件，然后追加类似 "Lv.5/10" 的等级文本
                         MutableComponent nameLine = displayName.copy()
                                 .append("Lv." + activeLevel + "/" + totalLevel);
+                        //检查是否为本次合成新增的矩阵，高亮显示
+                        if (id.equals(previewMatrixId)) {
+                            nameLine = nameLine.withStyle(ChatFormatting.GOLD)
+                                    .append(Component.translatable("tooltip.stellarmod_item.tool_core.new_tag"));
+                        }
                         tooltip.add(nameLine);
                         List<Component> descList = effect.getDescription();
                         for (Component desc : descList) {
@@ -973,6 +1000,17 @@ public class ToolCoreItem extends Item {
 
         //检测是否按下了 Ctrl 键，若是则仅显示副词条详情
         if (Screen.hasControlDown()) {
+            //读取预览标记，找出本次合成新增的副词条ID集合
+            Set<String> newModifierIds = null;
+            if (stack.hasTag() && stack.getTag().contains(TAG_PREVIEW)
+                    && stack.getTag().contains(TAG_PREVIEW_NEW_MODIFIERS, Tag.TAG_LIST)) {
+                ListTag newModList = stack.getTag().getList(TAG_PREVIEW_NEW_MODIFIERS, Tag.TAG_STRING);
+                newModifierIds = new HashSet<>();
+                for (int i = 0; i < newModList.size(); i++) {
+                    newModifierIds.add(newModList.getString(i));
+                }
+            }
+
             List<Material> materials = getMaterialsFromStack(stack);
             List<String> modifierIds = new ArrayList<>();
             Set<String> seen = new LinkedHashSet<>();
@@ -1003,6 +1041,11 @@ public class ToolCoreItem extends Item {
                         //显示格式：名称 Lv.当前/最大，例如"电磁力 Lv.2/5"
                         MutableComponent nameWithLevel = displayName.copy()
                                 .append("Lv." + activeLevel + "/" + maxLevel);
+                        //检查是否为本次合成新增的副词条，高亮显示
+                        if (newModifierIds != null && newModifierIds.contains(modifierId)) {
+                            nameWithLevel = nameWithLevel.withStyle(ChatFormatting.GOLD)
+                                    .append(Component.translatable("tooltip.stellarmod_item.tool_core.new_tag"));
+                        }
                         tooltip.add(nameWithLevel);
                         List<Component> descList = effect.getDescription();
                         for (Component desc : descList) {
@@ -1031,23 +1074,51 @@ public class ToolCoreItem extends Item {
         List<Material> mats = getMaterialsFromStack(stack);
         if (!mats.isEmpty()) {
             tooltip.add(Component.translatable("tooltip.stellarmod_item.tool_core.materials"));
-            Map<ResourceLocation, Integer> countMap = new LinkedHashMap<>();
-            for (Material mat : mats) {
-                countMap.put(mat.itemId(), countMap.getOrDefault(mat.itemId(), 0) + 1);
-            }
-            for (Map.Entry<ResourceLocation, Integer> entry : countMap.entrySet()) {
-                ResourceLocation itemId = entry.getKey();
-                int count = entry.getValue();
-
-                //使用物品注册名自动生成翻译键
-                Component itemName = Component.translatable("item." + itemId.getNamespace() + "." + itemId.getPath());
-                Component displayLine;
-                if (count > 1) {
-                    displayLine = Component.translatable("tooltip.stellarmod_item.tool_core.material_count", itemName, count);
-                } else {
-                    displayLine = itemName;
+            //读取预览标记，用于高亮本次合成新增的材料
+            boolean isPreview = stack.hasTag() && stack.getTag().contains(TAG_PREVIEW);
+            String previewMatId = null;
+            boolean isNewMaterial = false;
+            if (isPreview && stack.hasTag()) {
+                CompoundTag tag = stack.getTag();
+                if (tag.contains(TAG_PREVIEW_MATERIAL_ID, Tag.TAG_STRING)) {
+                    previewMatId = tag.getString(TAG_PREVIEW_MATERIAL_ID);
                 }
-                tooltip.add(Component.literal(" §8- ").append(displayLine));
+                isNewMaterial = tag.getBoolean(TAG_PREVIEW_IS_NEW_MATERIAL);
+            }
+
+            int totalMaterials = mats.size();
+            int maxShow = Math.min(totalMaterials, 5);
+
+            //收集前5个材料，若预览新材料在5个之后则替换最后一个确保可见
+            List<Material> showMats = new ArrayList<>();
+            Material previewMat = null;
+            for (Material mat : mats) {
+                if (showMats.size() < maxShow) {
+                    showMats.add(mat);
+                }
+                if (isNewMaterial && mat.itemId().toString().equals(previewMatId)) {
+                    previewMat = mat;
+                }
+            }
+            if (previewMat != null && !showMats.contains(previewMat) && !showMats.isEmpty()) {
+                showMats.set(showMats.size() - 1, previewMat);
+            }
+
+            for (Material mat : showMats) {
+                ResourceLocation itemId = mat.itemId();
+                Component itemName = Component.translatable("item." + itemId.getNamespace() + "." + itemId.getPath());
+                //检查是否为本次合成新增的材料，高亮显示
+                boolean isThisNew = isNewMaterial && itemId.toString().equals(previewMatId);
+                if (isThisNew) {
+                    //§6-这是材料名前的-号，为金色，§8-为灰色-号
+                    tooltip.add(Component.literal(" §6- ").append(itemName.copy().withStyle(ChatFormatting.GOLD))
+                            .append(Component.translatable("tooltip.stellarmod_item.tool_core.new_tag")));
+                } else {
+                    tooltip.add(Component.literal(" §8- ").append(itemName));
+                }
+            }
+            if (totalMaterials > maxShow) {
+                tooltip.add(Component.translatable("tooltip.stellarmod_item.tool_core.more_materials", totalMaterials - maxShow));
             }
         }
 
@@ -1057,8 +1128,8 @@ public class ToolCoreItem extends Item {
             tooltip.add(Component.translatable("tooltip.stellarmod_item.tool_core.durability", maxDmg - currentDmg, maxDmg));
         }
 
-        if (stack.hasTag() && stack.getTag().contains("PreviewRepair")) {
-            int repair = stack.getTag().getInt("PreviewRepair");
+        if (stack.hasTag() && stack.getTag().contains(TAG_PREVIEW_REPAIR)) {
+            int repair = stack.getTag().getInt(TAG_PREVIEW_REPAIR);
             tooltip.add(Component.translatable("tooltip.stellarmod_item.tool_core.will_repair", repair));
         }
 
