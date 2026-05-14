@@ -1,9 +1,9 @@
 {
-  "type": "stellarmod:stellar_type",
+  "type": "stellarmod:space_type",
   "generator": {
     "type": "stellarmod:empty",
     "biome_source": {
-      "biome": "stellarmod:stellar_biome"
+      "biome": "stellarmod:space_biome"
     }
   }
 }

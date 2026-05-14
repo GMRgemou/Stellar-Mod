@@ -33,8 +33,8 @@ public class DimensionBlock extends Block {
     private void handleStellarPortal(Entity player, BlockPos pos) {
         if (player.level() instanceof ServerLevel serverLevel) {
             MinecraftServer minecraftServer = serverLevel.getServer();
-            ResourceKey<Level> resourceKey = player.level().dimension() == StellarDimensions.STELLAR_SPACE_LEVEL_KEY ?
-                    Level.OVERWORLD : StellarDimensions.STELLAR_SPACE_LEVEL_KEY;
+            ResourceKey<Level> resourceKey = player.level().dimension() == StellarDimensions.SPACE_LEVEL_KEY ?
+                    Level.OVERWORLD : StellarDimensions.SPACE_LEVEL_KEY;
 
             ServerLevel portalDimension = minecraftServer.getLevel(resourceKey);
             if (portalDimension != null && !player.isPassenger()) {

@@ -54,7 +54,7 @@ public class ServerEventListener {
     @SubscribeEvent
     public static void onLevelLoad(LevelEvent.Load event) {
         if (!(event.getLevel() instanceof ServerLevel level)) return;
-        if (!level.dimension().equals(StellarDimensions.STELLAR_SPACE_LEVEL_KEY)) return;
+        if (!level.dimension().equals(StellarDimensions.SPACE_LEVEL_KEY)) return;
 
         StructureSpawnData data = level.getDataStorage().computeIfAbsent(
                 StructureSpawnData::load,

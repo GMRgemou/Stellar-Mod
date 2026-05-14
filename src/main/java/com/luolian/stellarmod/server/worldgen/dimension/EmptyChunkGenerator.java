@@ -24,11 +24,20 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+/**
+ * 空区块生成器，用于星域维度。
+ * 不生成任何地形、结构、生物或装饰——整个维度为纯虚空。
+ * 配合 {@link StellarDimensions} 中定义的 512 格高度使用。
+ */
 public class EmptyChunkGenerator extends ChunkGenerator {
 
     private static final int MIN_Y = 0;
     private static final int HEIGHT = 512;
 
+    /**
+     * Codec，用于数据包中对本生成器的序列化与反序列化。
+     * 仅保留生物群系源信息，其余字段由构造器补全。
+     */
     public static final Codec<EmptyChunkGenerator> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     FixedBiomeSource.CODEC.fieldOf("biome_source").forGetter(
@@ -37,7 +46,9 @@ public class EmptyChunkGenerator extends ChunkGenerator {
             ).apply(instance, EmptyChunkGenerator::new)
     );
 
-    //辅助构造函数，从FixedBiomeSource提取生物群系
+    /**
+     * 从 FixedBiomeSource 中提取唯一 Holder\<Biome\> 并委托给主构造器。
+     */
     private EmptyChunkGenerator(FixedBiomeSource biomeSource) {
         this(extractBiome(biomeSource));
     }
@@ -46,6 +57,10 @@ public class EmptyChunkGenerator extends ChunkGenerator {
         super(new FixedBiomeSource(biome));
     }
 
+    /**
+     * 从给定的 FixedBiomeSource 中提取第一个（也是唯一的）生物群系 Holder。
+     * @throws IllegalStateException 若生物群系源为空
+     */
     private static Holder<Biome> extractBiome(FixedBiomeSource source) {
         return source.possibleBiomes().stream().findFirst()
                 .orElseThrow(() -> new IllegalStateException("FixedBiomeSource must contain exactly one biome"));
@@ -56,12 +71,17 @@ public class EmptyChunkGenerator extends ChunkGenerator {
         return CODEC;
     }
 
+    /** 不进行地形雕刻 */
     @Override
-    public void applyCarvers(WorldGenRegion region, long seed, RandomState random, BiomeManager biomeManager, StructureManager structureManager, ChunkAccess chunk, GenerationStep.Carving step) {}
+    public void applyCarvers(WorldGenRegion region, long seed, RandomState random, BiomeManager biomeManager,
+                             StructureManager structureManager, ChunkAccess chunk, GenerationStep.Carving step) {}
 
+    /** 不构建地表 */
     @Override
-    public void buildSurface(WorldGenRegion region, StructureManager structureManager, RandomState random, ChunkAccess chunk) {}
+    public void buildSurface(WorldGenRegion region, StructureManager structureManager,
+                             RandomState random, ChunkAccess chunk) {}
 
+    /** 不生成自然生物 */
     @Override
     public void spawnOriginalMobs(WorldGenRegion region) {}
 
@@ -75,16 +95,20 @@ public class EmptyChunkGenerator extends ChunkGenerator {
         return MIN_Y;
     }
 
+    /** 直接返回空区块，不进行噪声填充 */
     @Override
-    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender, RandomState random, StructureManager structureManager, ChunkAccess chunk) {
+    public CompletableFuture<ChunkAccess> fillFromNoise(Executor executor, Blender blender, RandomState random,
+                                                       StructureManager structureManager, ChunkAccess chunk) {
         return CompletableFuture.completedFuture(chunk);
     }
 
+    /** 所有位置的基础高度均为 minY */
     @Override
     public int getBaseHeight(int x, int z, Heightmap.Types type, LevelHeightAccessor level, RandomState random) {
         return getMinY();
     }
 
+    /** 返回全部为空气的噪声柱 */
     @Override
     public NoiseColumn getBaseColumn(int x, int z, LevelHeightAccessor level, RandomState random) {
         BlockState[] states = new BlockState[level.getHeight()];
@@ -94,9 +118,11 @@ public class EmptyChunkGenerator extends ChunkGenerator {
         return new NoiseColumn(getMinY(), states);
     }
 
+    /** 调试屏幕不追加额外信息 */
     @Override
     public void addDebugScreenInfo(List<String> info, RandomState random, BlockPos pos) {}
 
+    /** 无海平面，返回 minY */
     @Override
     public int getSeaLevel() {
         return getMinY();
