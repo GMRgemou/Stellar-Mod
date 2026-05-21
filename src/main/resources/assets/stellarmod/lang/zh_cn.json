@@ -148,5 +148,43 @@
   "ftbquests.chapter.dependencies.invisible": "Hide Until Dependencies Completed",
   "ftbquests.chapter.dependencies.lock": "Lock Chapter Until Dependencies Completed",
 
-  "ftbquests.quest.visibility.always_invisible": "Always Invisible"
+  "ftbquests.quest.visibility.always_invisible": "Always Invisible",
+
+  "stellarmod.screen.dimension_seed": "维度种子设置",
+  "stellarmod.screen.dimension_seed.button": "维度种子",
+  "stellarmod.screen.dimension_seed.random": "随机",
+  "stellarmod.screen.dimension_seed.use_world": "使用世界种子",
+  "stellarmod.screen.dimension_seed.confirm": "确认",
+  "stellarmod.screen.dimension_seed.status_world": "当前：使用世界种子",
+  "stellarmod.screen.dimension_seed.status_custom": "当前：自定义种子",
+
+  "stellarmod.attribute.stability": "稳定性",
+  "stellarmod.attribute.vitality": "活性",
+  "stellarmod.attribute.resonance": "共振度",
+  "stellarmod.attribute.expansiveness": "扩张性",
+  "stellarmod.attribute.affinity": "亲和性",
+  "stellarmod.attribute.time_rate": "时间流速",
+  "stellarmod.attribute.law_strength": "法则强度",
+
+  "stellarmod.attribute.stability.desc": "过低→锚定崩塌/弹出；过高→固化/不可再调",
+  "stellarmod.attribute.vitality.desc": "过低→死寂无生物；过高→狂暴入侵",
+  "stellarmod.attribute.resonance.desc": "过低→传送消耗大/受伤；过高→边界模糊/内容泄漏",
+  "stellarmod.attribute.expansiveness.desc": "过低→空间裂隙干扰传送；过高→挤压其他维度",
+  "stellarmod.attribute.affinity.desc": "过低→持续 debuff；过高→强力 buff 伴随副作用",
+  "stellarmod.attribute.time_rate.desc": "过低→时间极慢；过高→时间极快引发异常",
+  "stellarmod.attribute.law_strength.desc": "过低→物理规则失效；过高→规则过强（重力增加等）",
+
+  "stellarmod.category.chaos": "混沌",
+  "stellarmod.category.adventure": "冒险",
+  "stellarmod.category.mining": "挖矿",
+  "stellarmod.category.exploration": "探索",
+  "stellarmod.category.structure": "结构",
+  "stellarmod.category.vast_world": "大世界",
+
+  "stellarmod.category.chaos.desc": "高风险高回报，属性极端，事件频繁",
+  "stellarmod.category.adventure.desc": "注重探索与战斗，多 Boss/地牢/挑战",
+  "stellarmod.category.mining.desc": "资源丰富，矿石密度高，地形适合开采",
+  "stellarmod.category.exploration.desc": "广袤空间，隐藏废墟/遗迹，叙事驱动",
+  "stellarmod.category.structure.desc": "充满自然/人造建筑，建筑党天堂",
+  "stellarmod.category.vast_world.desc": "模拟主世界规模，综合型，面积广阔"
 }

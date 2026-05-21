@@ -148,5 +148,43 @@
   "ftbquests.chapter.dependencies.invisible": "Hide Until Dependencies Completed",
   "ftbquests.chapter.dependencies.lock": "Lock Chapter Until Dependencies Completed",
 
-  "ftbquests.quest.visibility.always_invisible": "Always Invisible"
+  "ftbquests.quest.visibility.always_invisible": "Always Invisible",
+
+  "stellarmod.screen.dimension_seed": "Dimension Seed",
+  "stellarmod.screen.dimension_seed.button": "Dimension Seed",
+  "stellarmod.screen.dimension_seed.random": "Random",
+  "stellarmod.screen.dimension_seed.use_world": "Use World Seed",
+  "stellarmod.screen.dimension_seed.confirm": "Confirm",
+  "stellarmod.screen.dimension_seed.status_world": "Status: World Seed",
+  "stellarmod.screen.dimension_seed.status_custom": "Status: Custom Seed",
+
+  "stellarmod.attribute.stability": "Stability",
+  "stellarmod.attribute.vitality": "Vitality",
+  "stellarmod.attribute.resonance": "Resonance",
+  "stellarmod.attribute.expansiveness": "Expansiveness",
+  "stellarmod.attribute.affinity": "Affinity",
+  "stellarmod.attribute.time_rate": "Time Rate",
+  "stellarmod.attribute.law_strength": "Law Strength",
+
+  "stellarmod.attribute.stability.desc": "Low → Anchor collapse / ejection; High → Solidified / cannot tune",
+  "stellarmod.attribute.vitality.desc": "Low → Dead zone, no mobs; High → Frenzy, invasion",
+  "stellarmod.attribute.resonance.desc": "Low → High teleport cost / damage; High → Boundary blur / leaks",
+  "stellarmod.attribute.expansiveness.desc": "Low → Spatial rifts disrupt teleport; High → Squeeze other dimensions",
+  "stellarmod.attribute.affinity.desc": "Low → Continuous debuff; High → Strong buff with side effects",
+  "stellarmod.attribute.time_rate.desc": "Low → Extreme slow time; High → Extreme fast, desync anomalies",
+  "stellarmod.attribute.law_strength.desc": "Low → Physics rules fail; High → Overbearing laws (increased gravity etc.)",
+
+  "stellarmod.category.chaos": "Chaos",
+  "stellarmod.category.adventure": "Adventure",
+  "stellarmod.category.mining": "Mining",
+  "stellarmod.category.exploration": "Exploration",
+  "stellarmod.category.structure": "Structure",
+  "stellarmod.category.vast_world": "Vast World",
+
+  "stellarmod.category.chaos.desc": "High risk, high reward; extreme attributes, frequent events",
+  "stellarmod.category.adventure.desc": "Focus on exploration & combat; many bosses/dungeons/challenges",
+  "stellarmod.category.mining.desc": "Resource-rich; high ore density; mining-friendly terrain",
+  "stellarmod.category.exploration.desc": "Vast space; hidden ruins/relics; story-driven",
+  "stellarmod.category.structure.desc": "Full of natural/artificial structures; builder's paradise",
+  "stellarmod.category.vast_world.desc": "Overworld-like scale; comprehensive; vast area"
 }

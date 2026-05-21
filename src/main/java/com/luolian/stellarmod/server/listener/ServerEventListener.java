@@ -7,6 +7,8 @@ import com.luolian.stellarmod.server.data.toolcore.StellarMatrixRegistry;
 import com.luolian.stellarmod.server.item.custom.toolcore.ToolCoreItem;
 import com.luolian.stellarmod.server.item.custom.toolcore.ToolCoreNBT;
 import com.luolian.stellarmod.server.worldgen.dimension.spaceline.space.SpaceDimensions;
+import com.luolian.stellarmod.server.worldgen.dimensionline.StellarDimensionSeedData;
+import com.luolian.stellarmod.server.worldgen.dimensionline.StellarDimensionSeedHolder;
 import io.github.edwinmindcraft.calio.api.event.CalioDynamicRegistryEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -14,6 +16,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
@@ -76,6 +79,49 @@ public class ServerEventListener {
                 data.setDirty();
             }
         }
+    }
+
+    /**
+     * 主世界首次加载时，将玩家设定的维度种子从临时 Holder 持久化到世界存档。
+     *
+     * <h3>触发时机</h3>
+     * {@link LevelEvent.Load} 在每个维度加载时均会触发（客户端+服务端），
+     * 此处通过两层过滤确保只在"服务端主世界"执行一次。
+     *
+     * <h3>数据流</h3>
+     * <pre>
+     * StellarDimensionSeedScreen（GUI 选择种子）
+     *   → StellarDimensionSeedHolder（客户端静态临时持有）
+     *     → onOverworldLoad（本方法，服务端事件）
+     *       → StellarDimensionSeedData.initialize（持久化到 .dat 文件）
+     *         → 之后所有维度生成通过 getOrCreate() 读取
+     * </pre>
+     *
+     * <h3>Holder 读取顺序说明</h3>
+     * 必须先调用 {@code hasCustomSeed()} 再调用 {@code resolveSeed()}。
+     * 因为 {@code resolveSeed()} 内部会清空 Holder 状态（标记重置），
+     * 顺序颠倒则 {@code hasCustomSeed()} 永远返回 {@code false}。
+     *
+     * @param event 维度加载事件，携带已加载的 Level 实例
+     */
+    @SubscribeEvent
+    public static void onOverworldLoad(LevelEvent.Load event) {
+        //过滤 1：仅服务端维度（客户端 Level 非 ServerLevel，不处理）
+        if (!(event.getLevel() instanceof ServerLevel level)) return;
+        //过滤 2：仅主世界（地狱/末地/自定义维度不触发初始化）
+        if (!level.dimension().equals(Level.OVERWORLD)) return;
+
+        //检查是否已有持久化数据——非 null 说明是已有存档重载，跳过
+        StellarDimensionSeedData existing = StellarDimensionSeedData.get(level);
+        if (existing != null) return;
+
+        //首次创建世界：从临时 Holder 读取玩家在 GUI 中的选择
+        //注意：必须先用 hasCustomSeed() 读标记，再用 resolveSeed() 取值；
+        //resolveSeed() 会清空 Holder，顺序颠倒则 hasCustomSeed() 永远为 false
+        boolean isCustom = StellarDimensionSeedHolder.hasCustomSeed();
+        long seed = StellarDimensionSeedHolder.resolveSeed(level.getSeed());
+        //将种子持久化到世界存档的 .dat 文件中
+        StellarDimensionSeedData.initialize(level, isCustom, seed);
     }
 
     /**
