@@ -172,23 +172,6 @@ dependencies {
         jarJar.ranged(it, "[0.5.0,)")
     }
 
-    // FTB
-    implementation fg.deobf("curse.maven:ftb-quests-forge-289412:7260736")
-    implementation fg.deobf("curse.maven:ftb-library-forge-404465:7296748")
-    implementation fg.deobf("curse.maven:ftb-teams-forge-404468:6130786")
-
-    // Origins Forge
-    implementation fg.deobf("io.github.edwinmindcraft:calio-forge:${calio_forge_version}")
-    implementation fg.deobf("io.github.edwinmindcraft:apoli-forge:${apoli_forge_version}")
-    implementation fg.deobf("io.github.edwinmindcraft:origins-forge:${origins_forge_version}")
-
-    // Caelus API
-    runtimeOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:${caelus_forge_version}")
-    compileOnly fg.deobf("top.theillusivec4.caelus:caelus-forge:${caelus_forge_version}")
-
-    // Architectury API
-    implementation fg.deobf("dev.architectury:architectury-forge:${architectury_api_version}")
-
     // TerraBlender
     implementation fg.deobf("com.github.glitchfiend:TerraBlender-forge:${minecraft_version}-${terrablender_version}")
 
@@ -226,11 +209,6 @@ tasks.named('processResources', ProcessResources).configure {
             mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
             mod_authors: mod_authors, mod_description: mod_description,
             terrablender_version_range: terrablender_version_range,
-            origins_forge_version_range: origins_forge_version_range,
-            architectury_api_version_range: architectury_api_version_range,
-            calio_forge_version_range: calio_forge_version_range,
-            apoli_forge_version_range: apoli_forge_version_range,
-            caelus_forge_version_range: caelus_forge_version_range
     ]
     inputs.properties replaceProperties
 

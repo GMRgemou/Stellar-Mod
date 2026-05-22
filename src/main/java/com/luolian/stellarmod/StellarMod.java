@@ -1,7 +1,6 @@
 //模组主类
 package com.luolian.stellarmod;
 
-import com.luolian.stellarmod.api.compat.StellarTaskTypes;
 import com.luolian.stellarmod.client.screen.craftingArea.CraftingAreaBlockScreen;
 import com.luolian.stellarmod.client.screen.StellarMenuTypes;
 import com.luolian.stellarmod.network.StellarNetworkHandler;
@@ -64,8 +63,6 @@ public class StellarMod {
     }
 
     public StellarMod(FMLJavaModLoadingContext context) {
-        StellarTaskTypes.init();
-
         IEventBus modEventBus = context.getModEventBus();
         StellarItems.register(modEventBus);                 //调用自定义的物品注册类，将物品注册逻辑绑定到模组事件总线
         StellarCreativeModeTabs.register(modEventBus);      //调用自定义的创造模式标签注册类，将标签注册逻辑绑定到模组事件总线
