@@ -10,6 +10,7 @@ import com.luolian.stellarmod.server.block.entity.StellarBlockEntities;
 import com.luolian.stellarmod.server.data.toolcore.StellarMatrixRegistry;
 import com.luolian.stellarmod.server.data.toolcore.StellarModifierRegistry;
 import com.luolian.stellarmod.server.data.toolcore.MaterialDataLoader;
+import com.luolian.stellarmod.server.data.dimensionline.StellarTuningResourceLoader;
 import com.luolian.stellarmod.server.effect.StellarMobEffects;
 import com.luolian.stellarmod.server.item.StellarCreativeModeTabs;
 import com.luolian.stellarmod.server.item.StellarItems;
@@ -88,14 +89,20 @@ public class StellarMod {
 
     //事件处理方法
     /**
-     * 在资源重载事件中添加自定义的数据加载器 {@link MaterialDataLoader}。
-     * 该方法由 Forge 事件总线调用，负责将材料 JSON 文件的扫描逻辑注入资源加载流程。
+     * 在资源重载事件中添加自定义的数据加载器。
+     * <ul>
+     *   <li>{@link MaterialDataLoader} — 扫描 {@code materials/} 目录，加载工具核心材料定义</li>
+     *   <li>{@link StellarTuningResourceLoader} — 扫描 {@code tuning_resources/} 目录，加载传送门调谐资源定义</li>
+     * </ul>
+     * 该方法由 Forge 事件总线调用，负责将 JSON 文件的扫描逻辑注入资源加载流程。
      *
      * @param event 资源重载事件
      */
     private void onAddReloadListeners(AddReloadListenerEvent event) {
         event.addListener(new MaterialDataLoader());
+        event.addListener(new StellarTuningResourceLoader());
         LOGGER.debug("MaterialDataLoader registered to AddReloadListenerEvent");
+        LOGGER.debug("StellarTuningResourceLoader registered to AddReloadListenerEvent");
     }
 
     @Mod.EventBusSubscriber(modid = StellarMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

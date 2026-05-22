@@ -2,6 +2,8 @@ package com.luolian.stellarmod.server.listener;
 
 import com.luolian.stellarmod.StellarMod;
 import com.luolian.stellarmod.api.toolcore.StellarMatrixEffect;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 import com.luolian.stellarmod.api.util.OriginsUtil;
 import com.luolian.stellarmod.server.data.toolcore.StellarMatrixRegistry;
 import com.luolian.stellarmod.server.item.custom.toolcore.ToolCoreItem;
@@ -9,6 +11,7 @@ import com.luolian.stellarmod.server.item.custom.toolcore.ToolCoreNBT;
 import com.luolian.stellarmod.server.worldgen.dimension.spaceline.space.SpaceDimensions;
 import com.luolian.stellarmod.server.worldgen.dimensionline.StellarDimensionSeedData;
 import com.luolian.stellarmod.server.worldgen.dimensionline.StellarDimensionSeedHolder;
+import com.luolian.stellarmod.server.worldgen.dimensionline.StellarPresetDimensionPool;
 import io.github.edwinmindcraft.calio.api.event.CalioDynamicRegistryEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -32,6 +35,8 @@ import java.util.Optional;
 
 @Mod.EventBusSubscriber(modid = StellarMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ServerEventListener {
+    private static final Logger LOGGER = LogUtils.getLogger();
+
     @SubscribeEvent
     public static void onDataPackSync(OnDatapackSyncEvent event) {
         OriginsUtil.buildOriginToLayerCache();
@@ -93,7 +98,8 @@ public class ServerEventListener {
      * StellarDimensionSeedScreen（GUI 选择种子）
      *   → StellarDimensionSeedHolder（客户端静态临时持有）
      *     → onOverworldLoad（本方法，服务端事件）
-     *       → StellarDimensionSeedData.initialize（持久化到 .dat 文件）
+     *       → StellarDimensionSeedData.initialize（种子持久化到 .dat）
+     *       → StellarPresetDimensionPool.getOrCreate（使用同一份种子生成维度池）
      *         → 之后所有维度生成通过 getOrCreate() 读取
      * </pre>
      *
@@ -122,6 +128,22 @@ public class ServerEventListener {
         long seed = StellarDimensionSeedHolder.resolveSeed(level.getSeed());
         //将种子持久化到世界存档的 .dat 文件中
         StellarDimensionSeedData.initialize(level, isCustom, seed);
+
+        //维度种子初始化完成后，使用同一份种子生成预生成维度池
+        //先通过 get 取回刚持久化的种子数据，确保池使用完全一致的种子值
+        StellarDimensionSeedData seedData = StellarDimensionSeedData.get(level);
+        if (seedData != null) {
+            long dimensionSeed = seedData.getDimensionSeed();
+            StellarPresetDimensionPool.getOrCreate(level, dimensionSeed);
+        } else {
+            //理论上不会到达——initialize() 刚执行完毕，get() 必然取回非 null 数据
+            //若到达此处，说明 DimensionDataStorage 内部出现了异常状态（如并发修改或缓存不一致）
+            LOGGER.warn(
+                    "Unexpected null StellarDimensionSeedData right after initialization. " +
+                            "Falling back to level seed for dimension pool generation."
+            );
+            StellarPresetDimensionPool.getOrCreate(level, level.getSeed());
+        }
     }
 
     /**

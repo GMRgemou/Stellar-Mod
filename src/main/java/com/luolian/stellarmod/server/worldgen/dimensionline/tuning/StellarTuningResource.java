@@ -25,7 +25,8 @@ public record StellarTuningResource(
 ) {
 
     /**
-     * Record 紧凑构造器：在字段自动赋值前进行校验和预处理。
+     * 传送门调谐资源<br>
+     * 此处采用 Record 紧凑构造器：在字段自动赋值前进行校验和预处理。
      * <ul>
      *   <li>校验 {@code itemId} 非空，为 null 则立即抛出 NullPointerException</li>
      *   <li>补全效果数组到 7 个元素——调用方可只传有影响的几个属性，

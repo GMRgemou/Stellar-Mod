@@ -15,8 +15,8 @@ import java.util.Map;
 /**
  * 材料数据加载器，负责在资源重载时从数据包中读取并解析材料 JSON 文件。
  * <p>
- * 该类继承自 {@link SimpleJsonResourceReloadListener}，自动扫描所有资源包中
- * {@code assets/<命名空间>/materials/} 目录下的 JSON 文件，并将其解析为
+ * 该类继承自 {@link SimpleJsonResourceReloadListener}，自动扫描所有数据包中
+ * {@code data/<命名空间>/materials/} 目录下的 JSON 文件，并将其解析为
  * {@link Material} 对象注册到 {@link MaterialManager} 中。
  * </p>
  * <p>
@@ -68,7 +68,7 @@ public class MaterialDataLoader extends SimpleJsonResourceReloadListener {
     protected void apply(Map<ResourceLocation, JsonElement> resourceMap, ResourceManager manager, ProfilerFiller profiler) {
         MaterialManager.clear();
         for (Map.Entry<ResourceLocation, JsonElement> entry : resourceMap.entrySet()) {
-            ResourceLocation fileId = entry.getKey();   // 例如 stellarmod:iron
+            ResourceLocation fileId = entry.getKey();   //例如 stellarmod:iron
             JsonElement json = entry.getValue();
             try {
                 Material material = parseMaterial(fileId, json.getAsJsonObject());

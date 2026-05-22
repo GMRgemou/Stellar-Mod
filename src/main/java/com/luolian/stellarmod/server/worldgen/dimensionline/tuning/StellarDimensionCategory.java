@@ -15,20 +15,17 @@ public enum StellarDimensionCategory {
     /** 混沌类：高风险高回报，属性极端，事件频繁 */
     CHAOS("chaos"),
 
-    /** 冒险类：注重探索与战斗，多 Boss/地牢/挑战 */
+    /** 冒险类：注重探索与战斗，Boss/地牢/遗迹/建筑综合主题 */
     ADVENTURE("adventure"),
 
-    /** 挖矿类：资源丰富，矿石密度高，地形适合开采 */
+    /** 采矿类：资源丰富，矿石密度高，地形适合开采 */
     MINING("mining"),
 
-    /** 探索类：广袤空间，隐藏废墟/遗迹，叙事驱动 */
-    EXPLORATION("exploration"),
-
-    /** 结构类：充满自然/人造建筑，建筑党天堂 */
-    STRUCTURE("structure"),
-
     /** 大世界类：模拟主世界规模，综合型，面积广阔 */
-    VAST_WORLD("vast_world");
+    VAST_WORLD("vast_world"),
+
+    /** 虚空类：空岛/浮岛主题，重力异常，碎片间跳跃，高风险高回报 */
+    VOID("void");
 
     private final String id;
 
