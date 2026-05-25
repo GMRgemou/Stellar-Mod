@@ -141,18 +141,6 @@ repositories {
     maven {
         url "https://cursemaven.com/"
     }
-    // Architectury maven
-    maven {
-        url "https://maven.architectury.dev/"
-    }
-    // Origins Forge
-    maven {
-        url "https://maven.ladysnake.org/releases"
-    }
-    // Caelus API
-    maven {
-        url = "https://maven.theillusivec4.top/"
-    }
 }
 
 dependencies {

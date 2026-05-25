@@ -4,7 +4,6 @@ import com.luolian.stellarmod.StellarMod;
 import com.luolian.stellarmod.api.toolcore.StellarMatrixEffect;
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
-import com.luolian.stellarmod.api.util.OriginsUtil;
 import com.luolian.stellarmod.server.data.toolcore.StellarMatrixRegistry;
 import com.luolian.stellarmod.server.item.custom.toolcore.ToolCoreItem;
 import com.luolian.stellarmod.server.item.custom.toolcore.ToolCoreNBT;
@@ -12,11 +11,9 @@ import com.luolian.stellarmod.server.worldgen.dimension.spaceline.space.SpaceDim
 import com.luolian.stellarmod.server.worldgen.dimensionline.StellarDimensionSeedData;
 import com.luolian.stellarmod.server.worldgen.dimensionline.StellarDimensionSeedHolder;
 import com.luolian.stellarmod.server.worldgen.dimensionline.StellarPresetDimensionPool;
-import io.github.edwinmindcraft.calio.api.event.CalioDynamicRegistryEvent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -24,9 +21,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraftforge.event.OnDatapackSyncEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -36,28 +31,6 @@ import java.util.Optional;
 @Mod.EventBusSubscriber(modid = StellarMod.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ServerEventListener {
     private static final Logger LOGGER = LogUtils.getLogger();
-
-    @SubscribeEvent
-    public static void onDataPackSync(OnDatapackSyncEvent event) {
-        OriginsUtil.buildOriginToLayerCache();
-
-        ServerPlayer player = event.getPlayer();
-        if (player != null) {
-            OriginsUtil.handleOriginChange(player);
-        }
-    }
-
-    @SubscribeEvent
-    public static void reloadComplete(CalioDynamicRegistryEvent.LoadComplete event) {
-        OriginsUtil.buildOriginToLayerCache();
-    }
-
-    @SubscribeEvent
-    public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            OriginsUtil.handleOriginChange(serverPlayer);
-        }
-    }
 
     @SubscribeEvent
     public static void onLevelLoad(LevelEvent.Load event) {
