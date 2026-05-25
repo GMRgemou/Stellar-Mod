@@ -20,6 +20,7 @@
   "block.stellarmod.sapphire_crystal_ore": "蓝宝石水晶原矿",
   "block.stellarmod.sapphire_crystal_block": "蓝宝石水晶块",
   "block.stellarmod.crafting_area_block": "制作区",
+  "block.stellarmod.portal_core_block": "传送门核心方块",
 
   "action.stellarmod.pickaxe": "稿",
   "action.stellarmod.axe": "斧",
@@ -175,16 +176,10 @@
   "stellarmod.attribute.law_strength.desc": "过低→物理规则失效；过高→规则过强（重力增加等）",
 
   "stellarmod.category.chaos": "混沌",
-  "stellarmod.category.adventure": "冒险",
-  "stellarmod.category.mining": "挖矿",
-  "stellarmod.category.exploration": "探索",
-  "stellarmod.category.structure": "结构",
-  "stellarmod.category.vast_world": "大世界",
+  "stellarmod.category.adventure": "冒险世界",
+  "stellarmod.category.mining": "采矿",
 
-  "stellarmod.category.chaos.desc": "高风险高回报，属性极端，事件频繁",
-  "stellarmod.category.adventure.desc": "注重探索与战斗，多 Boss/地牢/挑战",
-  "stellarmod.category.mining.desc": "资源丰富，矿石密度高，地形适合开采",
-  "stellarmod.category.exploration.desc": "广袤空间，隐藏废墟/遗迹，叙事驱动",
-  "stellarmod.category.structure.desc": "充满自然/人造建筑，建筑党天堂",
-  "stellarmod.category.vast_world.desc": "模拟主世界规模，综合型，面积广阔"
+  "stellarmod.category.chaos.desc": "高风险高回报，属性极端，事件频繁。含虚空内容",
+  "stellarmod.category.adventure.desc": "综合探索与战斗主题，含原大世界内容。多 Boss/地牢/遗迹/建筑",
+  "stellarmod.category.mining.desc": "资源丰富，矿石密度高，地形适合开采"
 }

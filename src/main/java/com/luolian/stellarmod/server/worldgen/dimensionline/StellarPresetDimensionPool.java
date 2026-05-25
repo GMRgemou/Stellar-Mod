@@ -18,7 +18,7 @@ import java.util.*;
  * 预生成维度池——管理一个存档中所有预生成维度的持久化数据。
  * <p>
  * 在存档首次创建时，使用维度种子<b>确定性</b>生成全部预生成维度，
- * 每类别随机生成 2~4 个（由种子决定），同一种子始终产出完全相同的维度列表。
+ * 混沌 1 + 冒险世界 2~4 + 采矿 1，同一种子始终产出完全相同的维度列表。
  * <p>
  * 维度未被发现前对玩家不可见，需通过研究设备逐步解锁。
  *
@@ -33,7 +33,7 @@ import java.util.*;
  *   "generated": true,
  *   "dimensions": [
  *     { "id": "stellarmod:preset_chaos_01", "category": "chaos", "discovered": false, "generationSeed": ... },
- *     ...共 10~20 个（每类 2~4）
+ *     ...共 4~6 个（混沌 1 + 冒险世界 2~4 + 采矿 1）
  *   ]
  * }
  * }</pre>
@@ -46,10 +46,10 @@ public class StellarPresetDimensionPool extends SavedData {
 
     private static final String DATA_NAME = StellarMod.MOD_ID + "_preset_dimension_pool";
 
-    /** 每类别最少预生成数量 */
-    private static final int MIN_PER_CATEGORY = 2;
-    /** 每类别最多预生成数量 */
-    private static final int MAX_PER_CATEGORY = 4;
+    /** 冒险世界类最少预生成数量 */
+    private static final int ADVENTURE_MIN = 2;
+    /** 冒险世界类最多预生成数量 */
+    private static final int ADVENTURE_MAX = 4;
 
     /** 预生成维度列表（存档创建时确定，不可增减） */
     private final List<StellarPresetDimension> dimensions = new ArrayList<>();
@@ -76,8 +76,13 @@ public class StellarPresetDimensionPool extends SavedData {
     /**
      * 使用维度种子确定性生成全部预生成维度。
      * <p>
-     * 首先用种子决定每类别的数量（{@value #MIN_PER_CATEGORY}~{@value #MAX_PER_CATEGORY} 个），
-     * 再按同一 Random 序列生成维度属性。调用顺序固定，相同种子始终产出完全相同的维度列表。
+     * 生成规则因类别而异：
+     * <ul>
+     *   <li><b>混沌 (CHAOS)</b>：固定 1 个（后续扩展为混沌大维度内含子维度）</li>
+     *   <li><b>冒险世界 (ADVENTURE)</b>：{@value #ADVENTURE_MIN}~{@value #ADVENTURE_MAX} 个，由种子随机决定</li>
+     *   <li><b>采矿 (MINING)</b>：固定 1 个</li>
+     * </ul>
+     * 调用顺序固定，相同的维度种子始终产出完全相同的维度列表。
      * ID 格式：{@code stellarmod:preset_<category>_<全局序号>}。
      *
      * @param dimensionSeed 维度种子（来自 {@link StellarDimensionSeedData}）
@@ -91,13 +96,23 @@ public class StellarPresetDimensionPool extends SavedData {
         //使用维度种子的确定性随机序列，同一种子 → 相同维度列表
         Random random = new Random(dimensionSeed);
 
-        //第一轮：确定每类别的数量（2~4）——先消费随机序列
-        //values() 返回所有枚举常量数组，等价于：new StellarDimensionCategory[] { CHAOS, ADVENTURE, MINING, VAST_WORLD, VOID }
+        //第一轮：确定每类别的数量
+        //values() 返回所有枚举常量数组，按声明顺序：CHAOS → ADVENTURE → MINING
         StellarDimensionCategory[] categories = StellarDimensionCategory.values();
         int[] counts = new int[categories.length];
         for (int i = 0; i < categories.length; i++) {
-            //random.nextInt返回0到bound-1的伪随机int数
-            counts[i] = MIN_PER_CATEGORY + random.nextInt(MAX_PER_CATEGORY - MIN_PER_CATEGORY + 1);
+            switch (categories[i]) {
+                case CHAOS:
+                case MINING:
+                    //混沌和采矿各固定 1 个，不消耗随机序列
+                    counts[i] = 1;
+                    break;
+                case ADVENTURE:
+                    //冒险世界 2~4 个，由种子随机决定
+                    //random.nextInt返回0到bound-1的伪随机int数
+                    counts[i] = ADVENTURE_MIN + random.nextInt(ADVENTURE_MAX - ADVENTURE_MIN + 1);
+                    break;
+            }
         }
 
         //第二轮：按已确定的数量生成维度——同一种子、相同 Random 实例、相同消费顺序，确定性

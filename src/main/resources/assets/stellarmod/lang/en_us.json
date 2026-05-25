@@ -20,6 +20,7 @@
   "block.stellarmod.sapphire_crystal_ore": "Sapphire Crystal Ore",
   "block.stellarmod.sapphire_crystal_block": "Sapphire Crystal Block",
   "block.stellarmod.crafting_area_block": "Crafting Area Block",
+  "block.stellarmod.portal_core_block": "Portal Core Block",
 
   "action.stellarmod.pickaxe": "Pickaxe",
   "action.stellarmod.axe": "Axe",
@@ -175,16 +176,10 @@
   "stellarmod.attribute.law_strength.desc": "Low → Physics rules fail; High → Overbearing laws (increased gravity etc.)",
 
   "stellarmod.category.chaos": "Chaos",
-  "stellarmod.category.adventure": "Adventure",
+  "stellarmod.category.adventure": "Adventure World",
   "stellarmod.category.mining": "Mining",
-  "stellarmod.category.exploration": "Exploration",
-  "stellarmod.category.structure": "Structure",
-  "stellarmod.category.vast_world": "Vast World",
 
-  "stellarmod.category.chaos.desc": "High risk, high reward; extreme attributes, frequent events",
-  "stellarmod.category.adventure.desc": "Focus on exploration & combat; many bosses/dungeons/challenges",
-  "stellarmod.category.mining.desc": "Resource-rich; high ore density; mining-friendly terrain",
-  "stellarmod.category.exploration.desc": "Vast space; hidden ruins/relics; story-driven",
-  "stellarmod.category.structure.desc": "Full of natural/artificial structures; builder's paradise",
-  "stellarmod.category.vast_world.desc": "Overworld-like scale; comprehensive; vast area"
+  "stellarmod.category.chaos.desc": "High risk, high reward; extreme attributes, frequent events. Includes void content",
+  "stellarmod.category.adventure.desc": "Comprehensive exploration & combat; includes former vast world. Many bosses/dungeons/ruins/structures",
+  "stellarmod.category.mining.desc": "Resource-rich; high ore density; mining-friendly terrain"
 }

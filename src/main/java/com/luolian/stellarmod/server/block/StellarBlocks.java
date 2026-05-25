@@ -3,6 +3,7 @@ package com.luolian.stellarmod.server.block;
 import com.luolian.stellarmod.StellarMod;
 import com.luolian.stellarmod.server.block.custom.CraftingAreaBlock;
 import com.luolian.stellarmod.server.block.custom.DimensionBlock;
+import com.luolian.stellarmod.server.block.custom.PortalCoreBlock;
 import com.luolian.stellarmod.server.item.StellarItems;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -51,6 +52,12 @@ public class StellarBlocks {
     public static final RegistryObject<Block> CRAFTING_AREA_BLOCK =
             registerBlock("crafting_area_block", () -> new CraftingAreaBlock(BlockBehaviour.Properties.copy(Blocks.CRAFTING_TABLE)
                     .noOcclusion()));
+
+    public static final RegistryObject<Block> PORTAL_CORE_BLOCK =
+            registerBlock("portal_core_block", () -> new PortalCoreBlock(BlockBehaviour.Properties.of()
+                    .strength(50.0F, 1200.0F)      //黑曜石级硬度，防误拆
+                    .requiresCorrectToolForDrops()   //需钻石镐才能掉落
+                    .noOcclusion()));                //非完整方块，便于后续多方块检测
 
     private static <T extends Block> void registerBlockItems(String name, RegistryObject<T> block) {
         StellarItems.ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));

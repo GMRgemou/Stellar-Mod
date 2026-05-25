@@ -30,7 +30,9 @@ public class StellarBlockTagGenerator extends BlockTagsProvider {
                     StellarBlocks.SPACE_STATION_BLOCK.get(),
                     StellarBlocks.SPACE_STATION_GLASS_BLOCK.get(),
                     StellarBlocks.SAPPHIRE_CRYSTAL_ORE.get(),
-                    StellarBlocks.SAPPHIRE_CRYSTAL_BLOCK.get());
+                    StellarBlocks.SAPPHIRE_CRYSTAL_BLOCK.get(),
+                    StellarBlocks.PORTAL_CORE_BLOCK.get());
+
 
         this.tag(BlockTags.NEEDS_STONE_TOOL)    //添加挖掘等级为石稿的方块
                 .add(StellarBlocks.COIL_BLOCK.get(),
@@ -41,5 +43,8 @@ public class StellarBlockTagGenerator extends BlockTagsProvider {
                 .add(StellarBlocks.DIMENSION_BLOCK.get(),
                     StellarBlocks.SPACE_STATION_BLOCK.get(),
                     StellarBlocks.SPACE_STATION_GLASS_BLOCK.get());
+
+        this.tag(BlockTags.NEEDS_DIAMOND_TOOL)  //添加挖掘等级为钻石镐的方块
+                .add(StellarBlocks.PORTAL_CORE_BLOCK.get());
     }
 }

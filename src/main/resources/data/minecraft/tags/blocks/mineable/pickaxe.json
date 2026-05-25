@@ -5,6 +5,7 @@
     "stellarmod:space_station_block",
     "stellarmod:space_station_glass_block",
     "stellarmod:sapphire_crystal_ore",
-    "stellarmod:sapphire_crystal_block"
+    "stellarmod:sapphire_crystal_block",
+    "stellarmod:portal_core_block"
   ]
 }
