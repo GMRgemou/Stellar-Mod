@@ -8,12 +8,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "mixins.stellarmod.refmap.json",
   "mixins": [
-    "LivingEntityMixin",
-    "compat.ChapterMixin",
-    "compat.OriginCallbackPowerMixin",
-    "compat.OriginContainerMixin",
-    "compat.QuestMixin",
-    "compat.TeamDataMixin"
+    "LivingEntityMixin"
   ],
   "client": [
     "toolcore.PlayerTravelMixin"
